@@ -18,3 +18,38 @@ def neighbors(r, c, size):
 
 def count_adjacent_bombs(r, c, bombs):
     return sum((nr, nc) in bombs for nr, nc in neighbors(r, c, SIZE))
+
+def print_board(revealed, bombs, size, show_bombs=False):
+    print("   " + " ".join(f"{c+1}" for c in range(size)))
+    for r in range(size):
+        row_cells = []
+        for c in range(size):
+            if (r, c) in revealed:
+                if (r, c) in bombs:
+                    cell = "B"
+                else:
+                    cell = str(count_adjacent_bombs(r, c, bombs))
+            else:
+                if show_bombs and (r, c) in bombs:
+                    cell = "B"
+                else:
+                    cell = "."
+            row_cells.append(cell)
+        print(f"{r+1:2} " + " ".join(row_cells))
+    print()
+
+def get_player_move(size):
+    while True:
+        move = input(f"Escolha linha e coluna (1-{size}) separados por espaço, ex: '3 2': ").strip()
+        parts = move.split()
+        if len(parts) != 2:
+            print("Entrada inválida digite dois números separados por espaço.")
+            continue
+        if not (parts[0].isdigit() and parts[1].isdigit()):
+            print("Use apenas números.")
+            continue
+        r, c = int(parts[0]) - 1, int(parts[1]) - 1
+        if not (0 <= r < size and 0 <= c < size):
+            print(f"Números fora do intervalo. Use valores entre 1 e {size}.")
+            continue
+        return r, c
